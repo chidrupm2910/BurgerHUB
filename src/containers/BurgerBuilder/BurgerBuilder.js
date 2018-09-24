@@ -29,6 +29,7 @@ class BurgerBuilder extends Component {
         error: false
     }
     componentDidMount () {
+        console.log(this.props);
         axios.get('https://react-burgerhub.firebaseio.com/ingredients.json')
         .then(response => {
             this.setState({ingredients: response.data});
@@ -92,7 +93,7 @@ class BurgerBuilder extends Component {
     }
     
     purchaseContinueHandler = () => {
-        this.setState({loading: true})
+        /*this.setState({loading: true})
         //alert("You Continued");
         const order ={
             ingredients: this.state.ingredients,
@@ -115,7 +116,17 @@ class BurgerBuilder extends Component {
         .catch(error => {
             this.setState({loading: false, purchasing: false})
         });
-        
+        */
+        const queryParams = [];
+        for(let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]))
+        }
+        const queryString = queryParams.join('&')
+        console.log(this.props);
+        this.props.history.push({
+            pathname:'/checkout',
+            search: '?'+ queryString
+            })
     }
     render () {
         const disableInfo = {
