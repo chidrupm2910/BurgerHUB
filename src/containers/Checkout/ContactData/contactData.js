@@ -144,7 +144,7 @@ class ContactData extends Component {
         //alert("You Continued");
         const order ={
             ingredients: this.props.ings,
-            price: this.props.price,
+            price: (this.props.price).toFixed(2),
             orderData: formData
             
         };
