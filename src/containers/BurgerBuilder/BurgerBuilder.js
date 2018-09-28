@@ -8,7 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/orderSummary';
 import axios from '../../axios-orders.js';
 import Spinner from '../../components/UI/Spinner/spinner'
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorHandler';
-import * as actionTypes from '../../Store/action'
+import * as actions from '../../Store/actions/index'
 
 
 
@@ -21,18 +21,13 @@ class BurgerBuilder extends Component {
         
         purchaseable: false,
         purchasing: false,
-        loading: false,
-        error: false
+        loading: false
+        
     }
     componentDidMount () {
         console.log(this.props);
-        /*axios.get('https://react-burgerhub.firebaseio.com/ingredients.json')
-        .then(response => {
-            this.setState({ingredients: response.data});
-        })
-        .catch(error => {
-            this.setState({error: true})
-        })*/
+        this.props.onInitIngredients();
+        
     }
     updatePurchaseState (ingredients) {
        
@@ -97,7 +92,11 @@ class BurgerBuilder extends Component {
         queryParams.push("price=" + this.props.price);
         const queryString = queryParams.join('&')
         console.log(this.props);*/
+        
+        this.props.onPurchaseInit();
         this.props.history.push('/checkout')
+        
+        
         /*{
             pathname:'/checkout',
             search: '?'+ queryString
@@ -112,7 +111,7 @@ class BurgerBuilder extends Component {
         }
         
         
-        let burger = this.state.error ? <p>Ingredients not loaded</p> :<Spinner />
+        let burger = this.props.error ? <p>Ingredients not loaded</p> :<Spinner />
         if(this.props.ings){
            burger = (
             <Aux>
@@ -153,15 +152,18 @@ class BurgerBuilder extends Component {
 
 const mapStatetoProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     }
 }
 
 const mapDispatchtoProps = dispatch => {
     return {
-        onIngredientAdded : (ingName) => dispatch({type: actionTypes.ADD_Ingredient, ingredientName: ingName}),
-        onIngredientRemoved: (ingName) => dispatch({type: actionTypes.RMV_Ingredient, ingredientName: ingName})
+        onIngredientAdded : (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientRemoved: (ingName) => dispatch(actions.rmvIngredient(ingName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onPurchaseInit: () => dispatch(actions.purchaseInit())
     }
 }
 export default connect(mapStatetoProps, mapDispatchtoProps) (withErrorHandler(BurgerBuilder, axios));
