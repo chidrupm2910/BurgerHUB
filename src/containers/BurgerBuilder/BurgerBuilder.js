@@ -21,7 +21,8 @@ class BurgerBuilder extends Component {
         
         purchaseable: false,
         purchasing: false,
-        loading: false
+        loading: false,
+        
         
     }
     componentDidMount () {
@@ -80,6 +81,7 @@ class BurgerBuilder extends Component {
         this.setState({purchasing: true});
          }
          else {
+             this.props.onSetAuthRedirectPath('/checkout');
              this.props.history.push('/auth');
          }
     }
@@ -161,7 +163,8 @@ const mapStatetoProps = state => {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
         error: state.burgerBuilder.error,
-        isAuthenticated: state.auth.token != null
+        isAuthenticated: state.auth.token != null,
+        
     }
 }
 
@@ -170,7 +173,8 @@ const mapDispatchtoProps = dispatch => {
         onIngredientAdded : (ingName) => dispatch(actions.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actions.rmvIngredient(ingName)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onPurchaseInit: () => dispatch(actions.purchaseInit())
+        onPurchaseInit: () => dispatch(actions.purchaseInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.authRedirectPath(path))
     }
 }
 export default connect(mapStatetoProps, mapDispatchtoProps) (withErrorHandler(BurgerBuilder, axios));
